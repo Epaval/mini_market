@@ -1,0 +1,339 @@
+{% extends "caja/base_caja.html" %}
+{% load static %}
+
+{% block panel-content %}
+
+<!-- Font Awesome 6 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+  :root {
+    --primary-blue: #2c5aa0;
+    --secondary-blue: #3a7ca5;
+    --accent-orange: #ff7b3a;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #343a40;
+    --text-color: #212529;
+    --border-color: #ced4da;
+    --success-color: #28a745;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    --transition: all 0.3s ease;
+  }
+
+  body {
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .caja-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  /* Incluir opciones de reporte */
+  /* Asegúrate de que reporte-options.html use estilos modernos */
+
+  /* Formulario de filtros */
+  .filters-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+  }
+
+  .filters-form label {
+    font-weight: 500;
+    color: var(--dark-gray);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.95rem;
+  }
+
+  .input-group {
+    display: flex;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .input-group-label {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-group input {
+    flex: 1;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
+  }
+
+  .input-group input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 2px rgba(44, 90, 160, 0.2);
+  }
+
+  .btn-search {
+    background-color: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 0.7rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    margin-top: 1.8rem;
+  }
+
+  .btn-search:hover {
+    background-color: #234c86;
+    transform: translateY(-2px);
+  }
+
+  /* Título principal */
+  .section-title {
+    color: var(--primary-blue);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 2rem 0 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title i {
+    background: var(--primary-blue);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+  }
+
+  /* Venta individual */
+  .venta-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    transition: var(--transition);
+  }
+
+  .venta-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--hover-shadow);
+  }
+
+  .venta-header {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 0.8rem 1rem;
+    font-weight: 600;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .venta-header th {
+    text-align: left;
+    padding: 0.4rem 0;
+  }
+
+  .venta-header strong {
+    color: var(--accent-orange);
+  }
+
+  .detalle-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+
+  .detalle-table thead {
+    background-color: #f1f5f9;
+    color: var(--dark-gray);
+  }
+
+  .detalle-table th {
+    padding: 0.7rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .detalle-table td {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--medium-gray);
+  }
+
+  .detalle-table tbody tr:hover {
+    background-color: #f8fafc;
+  }
+
+  .detalle-table .text-right {
+    text-align: right;
+  }
+
+  .detalle-table .highlight {
+    font-weight: 700;
+    color: var(--primary-blue);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .caja-container {
+      padding: 0 0.5rem;
+    }
+
+    .filters-form {
+      grid-template-columns: 1fr;
+    }
+
+    .btn-search {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .venta-header {
+      grid-template-columns: 1fr;
+      font-size: 0.9rem;
+    }
+
+    .detalle-table th,
+    .detalle-table td {
+      padding: 0.6rem 0.5rem;
+    }
+  }
+
+  /* Estado vacío */
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--dark-gray);
+    background: #f9f9fb;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+    font-size: 1.1rem;
+  }
+
+  .empty-state i {
+    font-size: 3rem;
+    color: var(--medium-gray);
+    opacity: 0.5;
+  }
+</style>
+
+<div class="caja-container">
+  <!-- Opciones de reporte -->
+  {% include "includes/reporte-options.html" %}
+
+  <!-- Formulario de filtros -->
+  <form class="filters-form" method="GET">
+    <div>
+      <label><i class="fas fa-calendar"></i> Fecha Inicio</label>
+      <div class="input-group">
+        <span class="input-group-label"><i class="fas fa-calendar"></i></span>
+        {{ form.date_start }}
+      </div>
+    </div>
+
+    <div>
+      <label><i class="fas fa-calendar"></i> Fecha Fin</label>
+      <div class="input-group">
+        <span class="input-group-label"><i class="fas fa-calendar"></i></span>
+        {{ form.date_end }}
+      </div>
+    </div>
+
+    <div>
+      <button type="submit" class="btn-search">
+        <i class="fas fa-search"></i> Buscar
+      </button>
+    </div>
+  </form>
+
+  <!-- Título -->
+  <h3 class="section-title">
+    <i class="fas fa-cash-register"></i> Ventas en Rango de Fechas
+  </h3>
+
+  <!-- Lista de ventas -->
+  {% if resumen_ventas %}
+    {% for venta in resumen_ventas %}
+      <div class="venta-card">
+        <!-- Encabezado de venta -->
+        <table class="venta-header">
+          <tr>
+            <th><i class="fas fa-hashtag"></i> N° {{ venta.id }}</th>
+            <th><i class="fas fa-clock"></i> {{ venta.date_sale|date:'d/m/Y H:i' }}</th>
+            <th><i class="fas fa-credit-card"></i> {{ venta.get_type_payment_display }}</th>
+            <th><i class="fas fa-file"></i> {{ venta.get_type_invoce_display }}</th>
+            <th><i class="fas fa-box"></i> {{ venta.count }} prod.</th>
+            <th><i class="fas fa-dollar-sign"></i> <strong>Bs./ {{ venta.amount|floatformat:2 }}</strong></th>
+          </tr>
+        </table>
+
+        <!-- Detalle de productos -->
+        <table class="detalle-table">
+          <thead class="text-center">
+            <tr>
+              <th>Producto</th>
+              <th>Precio Venta</th>
+              <th>Cantidad</th>
+              <th>Sub Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for detalle in venta.detail_sale.all %}
+              <tr>
+                <td>{{ detalle.product.name|truncatechars:30 }}</td>
+                <td class="text-center">Bs./ {{ detalle.price_sale|floatformat:2 }}</td>
+                <td class="text-center">{{ detalle.count }}</td>
+                <td class="text-center highlight">Bs./ {{ detalle.subtotal|floatformat:2 }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-state">
+      <i class="fas fa-search"></i>
+      <p>No se encontraron ventas en el rango de fechas seleccionado.</p>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock panel-content %}

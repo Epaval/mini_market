@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Foundation Icons y CSS -->
+  <link rel="stylesheet" href="{% static 'css/foundation-icons/foundation-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'css/foundation.css' %}">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  
+  <title>{% block title %}Market JP{% endblock title %}</title>
+  {% block css %}{% endblock css %}
+</head>
+<body>
+
+<!-- Estructura Off-Canvas de Foundation -->
+<div class="off-canvas-wrapper">
+  
+  <!-- Menú Lateral (Off-Canvas) -->
+  <div class="off-canvas position-left" id="my-info" data-off-canvas data-position="left">
+    <div class="row column">
+      <h3 style="text-align: center; padding: 0.3em; color: #ffae00;">Market JP</h3>
+      <ul class="vertical menu" style="margin-top: 1rem;">
+        <li>
+          <a href="#"><span class="label warning">Almacén</span></a>
+          <ul class="nested vertical menu">
+            <li class="{% if request.resolver_match.url_name == 'producto-lista' %}activeli{% endif %}">
+              <a href="{% url 'producto_app:producto-lista' %}" style="color: white;">
+                <i class="fi-list"></i> Productos
+              </a>
+            </li>
+            <li class="{% if request.resolver_match.url_name == 'producto-filtros' %}activeli{% endif %}">
+              <a href="{% url 'producto_app:producto-filtros' %}" style="color: white;">
+                <i class="fi-graph-bar"></i> Reportes
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#"><span class="label warning">Ventas</span></a>
+          <ul class="nested vertical menu">
+            <li class="{% if request.resolver_match.url_name == 'venta-index' %}activeli{% endif %}">
+              <a href="{% url 'venta_app:venta-index' %}" style="color: white;">
+                <i class="fi-shopping-cart"></i> Vender
+              </a>
+            </li>
+            <li class="{% if request.resolver_match.url_name == 'caja-index' %}activeli{% endif %}">
+              <a href="{% url 'caja_app:caja-index' %}" style="color: white;">
+                <i class="fi-credit-card"></i> Cerrar Caja
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#"><span class="label warning">Administración</span></a>
+          <ul class="nested vertical menu">
+            <li class="{% if request.resolver_match.url_name == 'index-admin' %}activeli{% endif %}">
+              <a href="{% url 'home_app:index-admin' %}" style="color: white;">
+                <i class="fi-wrench"></i> Administración
+              </a>
+            </li>
+            <li class="{% if request.resolver_match.url_name == 'user-lista' %}activeli{% endif %}">
+              <a href="{% url 'users_app:user-lista' %}" style="color: white;">
+                <i class="fi-torsos-all"></i> Usuarios
+              </a>
+            </li>
+            <li class="{% if request.resolver_match.url_name == 'admin-reporte' %}activeli{% endif %}">
+              <a href="{% url 'home_app:admin-reporte' %}" style="color: white;">
+                <i class="fi-page-export"></i> Reportes
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="off-canvas-content" data-off-canvas-content>
+    
+    <!-- Barra superior con botón de menú -->
+    <div class="title-bar" data-responsive-toggle="menu-options" data-hide-for="large">
+      <div class="title-bar-left">
+        <!-- Botón de menú solo visible en móviles/tablets -->
+        <button class="menu-icon" type="button" data-open="my-info"></button>
+        <span class="title-bar-title">Menú</span>
+      </div>
+      
+    </div> 
+
+    <!-- Aquí va el contenido de cada página -->
+    <div class="grid-container" style="padding: 1.5em 1em;">
+      {% block content %}
+      {% endblock content %}
+    </div>
+  </div>
+</div>
+
+<!-- Scripts de Foundation -->
+<script src="{% static 'js/vendor/jquery.js' %}"></script>
+<script src="{% static 'js/vendor/what-input.js' %}"></script>
+<script src="{% static 'js/vendor/foundation.js' %}"></script>
+<script src="{% static 'js/app.js' %}"></script>
+
+<!-- Inicializa Foundation -->
+<script>
+  $(document).foundation();
+</script>
+
+{% block js %}
+{% endblock js %}
+
+</body>
+</html>

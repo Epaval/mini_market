@@ -1,0 +1,273 @@
+{% extends "home/base_home.html" %}
+{% load static %}
+
+{% block panel-content %}
+
+<!-- Font Awesome 6 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+  :root {
+    --primary-blue: #2c5aa0;
+    --secondary-blue: #3a7ca5;
+    --accent-orange: #ff7b3a;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #343a40;
+    --text-color: #212529;
+    --border-color: #ced4da;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    --transition: all 0.3s ease;
+  }
+
+  body {
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .dashboard-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  .section-title {
+    color: var(--primary-blue);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 2rem 0 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title i {
+    background: var(--primary-blue);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+  }
+
+  /* Tarjetas de resumen */
+  .stats-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .stat-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    text-align: center;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--hover-shadow);
+  }
+
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 0.8rem;
+    color: white;
+  }
+
+  .stat-icon.success {
+    background: var(--success-color);
+  }
+
+  .stat-icon.primary {
+    background: var(--primary-blue);
+  }
+
+  .stat-icon.warning {
+    background: var(--accent-orange);
+  }
+
+  .stat-title {
+    font-size: 0.95rem;
+    color: var(--dark-gray);
+    margin: 0 0 0.5rem;
+    font-weight: 500;
+  }
+
+  .stat-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--dark-gray);
+    margin: 0;
+  }
+
+  /* Tabla de resumen semanal */
+  .weekly-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    margin-top: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .weekly-table thead {
+    background-color: var(--primary-blue);
+    color: white;
+  }
+
+  .weekly-table th {
+    padding: 0.9rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+  }
+
+  .weekly-table td {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--medium-gray);
+    color: var(--text-color);
+  }
+
+  .weekly-table tbody tr:hover {
+    background-color: #f1f8ff;
+    transition: background 0.2s;
+  }
+
+  .weekly-table .text-right {
+    text-align: right;
+  }
+
+  .weekly-table .text-center {
+    text-align: center;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .dashboard-container {
+      padding: 0 0.5rem;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .section-title i {
+      margin-left: 4px;
+    }
+
+    .stats-cards {
+      grid-template-columns: 1fr;
+    }
+
+    .weekly-table {
+      font-size: 0.9rem;
+    }
+
+    .weekly-table th, .weekly-table td {
+      padding: 0.7rem 0.6rem;
+    }
+  }
+</style>
+
+<div class="dashboard-container">
+  <!-- Estadísticas principales -->
+  <h3 class="section-title">
+    <i class="fas fa-tachometer-alt"></i> Resumen del Día
+  </h3>
+
+  <div class="stats-cards">
+    <!-- Total Ventas Hoy -->
+    <div class="stat-card">
+      <div class="stat-icon success">
+        <i class="fas fa-cash-register"></i>
+      </div>
+      <h4 class="stat-title">Total Ventas Hoy</h4>
+      <p class="stat-value">Bs./ {{ total_ventas|floatformat:2 }}</p>
+    </div>
+
+    <!-- Total Anulaciones -->
+    <div class="stat-card">
+      <div class="stat-icon primary">
+        <i class="fas fa-ban"></i>
+      </div>
+      <h4 class="stat-title">Total Anulaciones</h4>
+      <p class="stat-value">Bs./ {{ total_anulaciones|floatformat:2 }}</p>
+    </div>
+
+    <!-- Productos en Stock 0 -->
+    <div class="stat-card">
+      <div class="stat-icon warning">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <h4 class="stat-title">Productos sin Stock</h4>
+      <p class="stat-value">{{ stok_cero }}</p>
+    </div>
+  </div>
+
+  <!-- Informe semanal -->
+  <h3 class="section-title">
+    <i class="fas fa-chart-line"></i> Informe de Ventas Semanal
+  </h3>
+
+  <table class="weekly-table">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>N° Ventas</th>
+        <th>Total Vendido</th>
+        <th>Ganancias</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for venta in resumen_semana %}
+        <tr>
+          <td>{{ venta.sale__date_sale__date|date:"d/m/Y" }}</td>
+          <td class="text-center">{{ venta.num_ventas }}</td>
+          <td class="text-right"><strong>Bs./ {{ venta.total_vendido|floatformat:2 }}</strong></td>
+          <td class="text-right" style="color: var(--success-color);">
+            <strong>Bs./ {{ venta.total_ganancias|floatformat:2 }}</strong>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4" style="text-align: center; color: var(--dark-gray); padding: 2rem;">
+            <i class="fas fa-chart-line" style="font-size: 2rem; opacity: 0.3;"></i><br>
+            <strong>No hay datos disponibles esta semana.</strong>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock panel-content %}

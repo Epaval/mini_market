@@ -1,0 +1,216 @@
+{% extends "producto/base_producto.html" %}
+{% load static %}
+
+{% block panel-content %}
+
+<!-- Font Awesome 6 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+  :root {
+    --primary-blue: #2c5aa0;
+    --accent-orange: #ff7b3a;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #343a40;
+    --text-color: #212529;
+    --danger-color: #dc3545;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    --transition: all 0.3s ease;
+  }
+
+  body {
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .delete-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  .delete-title {
+    text-align: center;
+    color: var(--danger-color);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .delete-title i {
+    color: var(--danger-color);
+  }
+
+  /* Tarjeta de producto */
+  .product-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    margin-bottom: 2rem;
+    border: 1px solid var(--medium-gray);
+  }
+
+  .stock-banner {
+    background-color: var(--accent-orange);
+    color: white;
+    font-weight: 600;
+    padding: 0.8rem 1.2rem;
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  .card-section {
+    padding: 1.5rem;
+  }
+
+  .card-section h4 {
+    margin: 0 0 1rem 0;
+    color: var(--dark-gray);
+    font-size: 1.3rem;
+  }
+
+  .card-section p {
+    margin: 0.6rem 0;
+    color: var(--text-color);
+    font-size: 0.95rem;
+  }
+
+  .card-section p strong {
+    color: var(--primary-blue);
+  }
+
+  /* Iconos en texto */
+  .info-icon {
+    color: var(--primary-blue);
+    width: 18px;
+    text-align: center;
+    margin-right: 6px;
+  }
+
+  /* Botones */
+  .btn {
+    padding: 0.7rem 1.3rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    border: none;
+  }
+
+  .btn-danger {
+    background-color: var(--danger-color);
+    color: white;
+  }
+
+  .btn-danger:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    background-color: var(--primary-blue);
+    color: white;
+  }
+
+  .btn-secondary:hover {
+    background-color: #234c86;
+    transform: translateY(-2px);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--primary-blue);
+    border: 2px solid var(--primary-blue);
+  }
+
+  .btn-outline:hover {
+    background-color: #f0f6ff;
+  }
+
+  /* Grupo de botones */
+  .button-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .delete-container {
+      padding: 0 0.5rem;
+    }
+
+    .button-group {
+      flex-direction: column;
+    }
+
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .delete-title {
+      font-size: 1.3rem;
+      flex-direction: column;
+      gap: 6px;
+    }
+  }
+</style>
+
+<div class="delete-container">
+  <h3 class="delete-title">
+    <i class="fas fa-trash-alt"></i> ¿Desea eliminar el producto?
+  </h3>
+
+  <form 
+    class="grid-x grid-margin-x align-center" 
+    action="{% url 'producto_app:producto-delete' product.id %}" 
+    method="POST"
+  >
+    {% csrf_token %}
+
+    <!-- Tarjeta de producto -->
+    <div class="cell medium-7">
+      <div class="product-card">
+        <!-- Banner de stock -->
+        <div class="stock-banner">
+          <i class="fas fa-boxes"></i> Quedan: <strong>{{ product.count }}</strong>
+        </div>
+
+        <!-- Detalles del producto -->
+        <div class="card-section">
+          <h4>{{ product.name }}</h4>
+          <p><i class="fas fa-building info-icon"></i> <strong>Proveedor:</strong> {{ product.provider }}</p>
+          <p><i class="fas fa-align-left info-icon"></i> <strong>Descripción:</strong> {{ product.description|default:"Sin descripción" }}</p>
+          <p><i class="fas fa-barcode info-icon"></i> <strong>Código:</strong> <code style="font-size: 0.9em;">{{ product.barcode }}</code></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="cell medium-6 button-group">
+      <button type="submit" class="btn btn-danger">
+        <i class="fas fa-trash"></i> Sí, Eliminar Producto
+      </button>
+      <a href="{% url 'producto_app:producto-lista' %}" class="btn btn-outline">
+        <i class="fas fa-arrow-left"></i> Volver a la Lista
+      </a>
+    </div>
+  </form>
+</div>
+
+{% endblock panel-content %}

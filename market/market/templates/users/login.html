@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block css %}
+<!-- Foundation CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css" crossorigin="anonymous">
+<!-- Foundation Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.min.css">
+<style>
+  :root {
+    --primary-blue: #2c5aa0;
+    --secondary-blue: #3a7ca5;
+    --accent-orange: #ff7b3a;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #343a40;
+    --text-color: #212529;
+    --border-color: #ced4da;
+  }
+  
+  body {
+    background: linear-gradient(135deg, var(--light-gray) 0%, #e6f0ff 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .login-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 450px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .login-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--primary-blue) 0%, var(--accent-orange) 100%);
+  }
+  
+  .login-title {
+    color: var(--primary-blue);
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 600;
+    font-size: 1.8rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--dark-gray);
+  }
+  
+  .input-container {
+    position: relative;
+  }
+  
+  .input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-blue);
+    z-index: 2;
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: var(--light-gray);
+  }
+  
+  .form-input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.2);
+    background-color: white;
+  }
+  
+  .login-button {
+    width: 100%;
+    padding: 0.9rem;
+    background: linear-gradient(90deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+  }
+  
+  .login-button:hover {
+    background: linear-gradient(90deg, #1e4080 0%, #2c6392 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(44, 90, 160, 0.3);
+  }
+  
+  /* Welcome Message Styles */
+  .welcome-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    border-left: 4px solid var(--accent-orange);
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+    transform: translateX(400px);
+    opacity: 0;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    max-width: 350px;
+  }
+  
+  .welcome-message.show {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  
+  .welcome-icon {
+    color: var(--accent-orange);
+    font-size: 1.5rem;
+    margin-right: 0.75rem;
+    flex-shrink: 0;
+  }
+  
+  .welcome-content h4 {
+    margin: 0 0 0.25rem 0;
+    color: var(--primary-blue);
+    font-size: 1.1rem;
+  }
+  
+  .welcome-content p {
+    margin: 0;
+    color: var(--dark-gray);
+    font-size: 0.9rem;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .login-container {
+      padding: 2rem 1.5rem;
+      margin: 0 1rem;
+    }
+    
+    .welcome-message {
+      right: 10px;
+      left: 10px;
+      max-width: none;
+    }
+  }
+</style>
+{% endblock css %}
+
+{% block content %}
+
+<!-- Welcome Message -->
+<div class="welcome-message" id="welcomeMessage">
+  <i class="fi-like welcome-icon"></i>
+  <div class="welcome-content">
+    <h4>¡Bienvenido al Sistema!</h4>
+    <p>Ingrese sus credenciales para acceder a su cuenta.</p>
+  </div>
+</div>
+
+<div class="grid-container">
+  <div class="grid-y medium-grid-frame align-center">
+    <div class="grid-x grid-padding-x align-center">
+      <div class="login-container">
+        <h3 class="login-title">Acceso al Sistema</h3>
+        <form method="POST">{% csrf_token %}
+          <div class="form-group">
+            <label class="form-label">Email:</label>
+            <div class="input-container">
+              <i class="fi-mail input-icon"></i>
+              <input type="email" name="email" class="form-input" placeholder="correo@ejemplo.com" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Contraseña:</label>
+            <div class="input-container">
+              <i class="fi-lock input-icon"></i>
+              <input type="password" name="password" class="form-input" placeholder="Ingrese su contraseña" required>
+            </div>
+          </div>
+          
+          <button type="submit" class="login-button">
+            <i class="fi-arrow-right" style="margin-right: 8px;"></i> Ingresar
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block js %}
+<!-- Foundation JS -->
+<script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/js/foundation.min.js" crossorigin="anonymous"></script>
+<script>
+  $(document).foundation();
+  
+  // Mostrar mensaje de bienvenida
+  document.addEventListener('DOMContentLoaded', function() {
+    const welcomeMessage = document.getElementById('welcomeMessage');
+    
+    // Mostrar el mensaje con animación
+    setTimeout(function() {
+      welcomeMessage.classList.add('show');
+    }, 300);
+    
+    // Ocultar el mensaje después de 3 segundos
+    setTimeout(function() {
+      welcomeMessage.classList.remove('show');
+      
+      // Opcional: eliminar completamente el mensaje del DOM después de la animación
+      setTimeout(function() {
+        welcomeMessage.remove();
+      }, 500);
+    }, 3000);
+  });
+</script>
+{% endblock js %}

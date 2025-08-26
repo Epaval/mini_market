@@ -1,0 +1,197 @@
+{% extends "home/base_home.html" %}
+{% load static %}
+
+{% block panel-content %}
+
+<!-- Font Awesome 6 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+  :root {
+    --primary-blue: #2c5aa0;
+    --secondary-blue: #3a7ca5;
+    --accent-orange: #ff7b3a;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #343a40;
+    --text-color: #212529;
+    --border-color: #ced4da;
+    --success-color: #28a745;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    --transition: all 0.3s ease;
+  }
+
+  body {
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .report-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  /* Título principal */
+  .total-sales {
+    text-align: center;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 1.8rem;
+    border: 1px solid var(--border-color);
+  }
+
+  .total-sales h4 {
+    margin: 0 0 0.8rem;
+    color: var(--dark-gray);
+    font-size: 1.3rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .total-sales h4 i {
+    color: var(--primary-blue);
+  }
+
+  .total-sales .amount {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    margin: 0;
+  }
+
+  /* Tabla moderna */
+  .ventas-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    margin-top: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .ventas-table thead {
+    background-color: var(--primary-blue);
+    color: white;
+  }
+
+  .ventas-table th {
+    padding: 0.9rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+  }
+
+  .ventas-table td {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--medium-gray);
+    color: var(--text-color);
+  }
+
+  .ventas-table tbody tr:hover {
+    background-color: #f1f8ff;
+    transition: background 0.2s;
+  }
+
+  .ventas-table .text-right {
+    text-align: right;
+  }
+
+  .ventas-table .highlight {
+    color: var(--primary-blue);
+    font-weight: 700;
+  }
+
+  .ventas-table .month {
+    font-weight: 600;
+    color: var(--dark-gray);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .report-container {
+      padding: 0 0.5rem;
+    }
+
+    .total-sales {
+      padding: 1rem;
+    }
+
+    .total-sales .amount {
+      font-size: 1.8rem;
+    }
+
+    .ventas-table {
+      font-size: 0.9rem;
+    }
+
+    .ventas-table th, .ventas-table td {
+      padding: 0.7rem 0.6rem;
+    }
+
+    .ventas-table .text-right {
+      text-align: left;
+    }
+  }
+</style>
+
+<div class="report-container">
+  <!-- Incluir opciones de reporte -->
+  {% include "includes/reporte-options.html" %}
+
+  <!-- Total de ventas -->
+  <div class="total-sales">
+    <h4>
+      <i class="fas fa-chart-line"></i> Tus Ventas hasta hoy
+    </h4>
+    <p class="amount">Bs./ {{ total_ventas|floatformat:2 }}</p>
+  </div>
+
+  <!-- Tabla de resumen mensual -->
+  <table class="ventas-table">
+    <thead>
+      <tr>
+        <th><i class="fas fa-calendar-alt"></i> Mes</th>
+        <th><i class="fas fa-shopping-cart"></i> N° Ventas</th>
+        <th><i class="fas fa-dollar-sign"></i> Venta Total</th>
+        <th><i class="fas fa-chart-line"></i> Ganancia Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for venta in resumen_ventas_mes %}
+        <tr>
+          <td class="month">
+            {{ venta.sale__date_sale__date__month }} / {{ venta.sale__date_sale__date__year }}
+          </td>
+          <td class="text-right">{{ venta.cantidad_ventas }}</td>
+          <td class="text-right">
+            <span class="highlight">Bs./ {{ venta.total_ventas|floatformat:2 }}</span>
+          </td>
+          <td class="text-right" style="color: var(--primary-blue); font-weight: 700;">
+            Bs./ {{ venta.ganancia_total|floatformat:2 }}
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4" style="text-align: center; color: var(--dark-gray); padding: 2rem;">
+            <i class="fas fa-chart-bar" style="font-size: 2rem; opacity: 0.3;"></i><br>
+            <strong>No hay datos disponibles.</strong>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock panel-content %}

@@ -1,0 +1,287 @@
+{% extends "producto/base_producto.html" %}
+{% load static %}
+
+{% block panel-content %}
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+  :root {
+    --primary-blue: #2c5aa0;
+    --secondary-blue: #3a7ca5;
+    --accent-orange: #ff7b3a;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #343a40;
+    --text-color: #212529;
+    --border-color: #ced4da;
+    --success-color: #28a745;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  }
+
+  .detail-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  .page-title {
+    text-align: center;
+    color: var(--dark-gray);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .page-title i {
+    color: var(--primary-blue);
+  }
+
+  .card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+    border: 1px solid var(--border-color);
+  }
+
+  .card:hover {
+    box-shadow: var(--hover-shadow);
+  }
+
+  .card-header {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .card-section {
+    padding: 1.5rem;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .info-item {
+    margin-bottom: 0.8rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .info-label {
+    font-weight: 600;
+    color: var(--dark-gray);
+    font-size: 0.95rem;
+  }
+
+  .info-value {
+    color: #444;
+    margin-top: 0.2rem;
+    font-size: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.2rem;
+    color: var(--primary-blue);
+    margin: 1.8rem 0 1rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent-orange);
+    display: inline-block;
+    font-weight: 600;
+  }
+
+  /* Tabla moderna */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0 2rem;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+  }
+
+  thead {
+    background-color: var(--primary-blue);
+    color: white;
+  }
+
+  th, td {
+    padding: 0.8rem 1rem;
+    text-align: left;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--medium-gray);
+    transition: background 0.2s;
+  }
+
+  tbody tr:hover {
+    background-color: #f1f8ff;
+  }
+
+  .empty-message {
+    text-align: center;
+    color: var(--success-color);
+    font-style: italic;
+    padding: 1.5rem;
+    background: #f0f9f0;
+    border-radius: 8px;
+    margin: 1rem 0;
+  }
+
+  .btn-print {
+    background-color: var(--accent-orange);
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: background 0.3s, transform 0.2s;
+    margin-top: 1rem;
+  }
+
+  .btn-print:hover {
+    background-color: #e56a2c;
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    .info-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .page-title {
+      font-size: 1.3rem;
+    }
+
+    .card-section {
+      padding: 1rem;
+    }
+  }
+</style>
+
+<div class="detail-container">
+  <!-- Título -->
+  <h3 class="page-title">
+    <i class="fas fa-box-open"></i> Detalle del Producto
+  </h3>
+
+  <!-- Información del producto -->
+  <div class="card">
+    <div class="card-header">
+      <i class="fas fa-info-circle"></i> Información General
+    </div>
+    <div class="card-section">
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Nombre</span>
+          <span class="info-value">{{ product.name }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Código de Barras</span>
+          <span class="info-value">{{ product.barcode }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Proveedor</span>
+          <span class="info-value">{{ product.provider }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Marca</span>
+          <span class="info-value">{{ product.marca }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Unidad de Medida</span>
+          <span class="info-value">{{ product.get_unit_display }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Vencimiento</span>
+          <span class="info-value">{{ product.due_date|default:"Sin fecha" }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Cantidad en Almacén</span>
+          <span class="info-value">{{ product.count }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Número de Ventas</span>
+          <span class="info-value">{{ product.num_sale }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Precio de Compra</span>
+          <span class="info-value">Bs./ {{ product.purchase_price|floatformat:2 }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Precio de Venta</span>
+          <span class="info-value">Bs./ {{ product.sale_price|floatformat:2 }}</span>
+        </div>
+      </div>
+
+      {% if product.description %}
+        <div class="info-item" style="margin-top: 1rem;">
+          <span class="info-label">Descripción</span>
+          <span class="info-value">{{ product.description }}</span>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Historial de ventas -->
+  <h4 class="section-title">
+    <i class="fas fa-chart-line"></i> Ventas en los últimos 30 días
+  </h4>
+
+  {% if ventas_mes %}
+    <table class="hover">
+      <thead>
+        <tr>
+          <th><i class="fas fa-calendar-alt"></i> Fecha</th>
+          <th><i class="fas fa-box"></i> Producto</th>
+          <th><i class="fas fa-tag"></i> Cantidad Vendida</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for venta in ventas_mes %}
+          <tr>
+            <td>{{ venta.sale__date_sale__date }}</td>
+            <td>{{ venta.product__name }}</td>
+            <td>{{ venta.cantidad_vendida }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="empty-message">
+      <i class="fas fa-check-circle"></i> No hay ventas registradas para este producto en los últimos 30 días.
+    </p>
+  {% endif %}
+
+  <!-- Botón de impresión -->
+  <div style="text-align: center;">
+    <a 
+      href="{% url 'producto_app:producto-detail_print' product.id %}" 
+      target="_blank" 
+      class="btn-print"
+    >
+      <i class="fas fa-print"></i> Imprimir Detalle
+    </a>
+  </div>
+</div>
+
+{% endblock panel-content %}

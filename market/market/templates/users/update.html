@@ -1,0 +1,379 @@
+{% extends "users/base_users.html" %}
+{% load static %}
+
+{% block panel-content %}
+
+<!-- Font Awesome 6 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+  :root {
+    --primary-blue: #2c5aa0;
+    --accent-orange: #ff7b3a;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #343a40;
+    --text-color: #212529;
+    --border-color: #ced4da;
+    --danger-color: #dc3545;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    --transition: all 0.3s ease;
+  }
+
+  body {
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .form-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  .form-title {
+    text-align: center;
+    color: var(--primary-blue);
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .form-title i {
+    background: var(--primary-blue);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+  }
+
+  /* Input Group modernizado */
+  .input-group {
+    display: flex;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 0.2rem;
+  }
+
+  .input-group-label {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-group input,
+  .input-group select {
+    flex: 1;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
+  }
+
+  .input-group input:focus,
+  .input-group select:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 2px rgba(44, 90, 160, 0.2);
+  }
+
+  /* Errores modernos */
+  .error-message {
+    color: var(--danger-color);
+    font-size: 0.85rem;
+    margin: 0.3rem 0 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Botones modernos */
+  .btn {
+    padding: 0.7rem 1.3rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    text-decoration: none;
+    text-align: center;
+  }
+
+  .btn-success {
+    background-color: var(--accent-orange);
+    color: white;
+  }
+
+  .btn-success:hover {
+    background-color: #e56a2c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(255, 123, 58, 0.3);
+  }
+
+  .btn-danger {
+    background-color: var(--danger-color);
+    color: white;
+  }
+
+  .btn-danger:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+  }
+
+  /* Contenedor de botones a los extremos */
+  .form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  /* Modal de confirmación */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .modal {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 450px;
+    overflow: hidden;
+    animation: scaleIn 0.3s ease;
+  }
+
+  .modal-header {
+    background-color: #f8f9fa;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .modal-header i {
+    color: var(--accent-orange);
+    font-size: 1.3rem;
+  }
+
+  .modal-header h4 {
+    margin: 0;
+    color: var(--dark-gray);
+    font-size: 1.2rem;
+  }
+
+  .modal-close {
+    margin-left: auto;
+    font-size: 1.5rem;
+    color: #6c757d;
+    cursor: pointer;
+  }
+
+  .modal-close:hover {
+    color: #343a40;
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+    color: var(--text-color);
+    line-height: 1.6;
+  }
+
+  .modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes scaleIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .form-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .form-container {
+      padding: 0 0.5rem;
+    }
+  }
+</style>
+
+<div class="form-container">
+  <h3 class="form-title">
+    <i class="fas fa-user-cog"></i> Datos Usuario
+  </h3>
+
+  <form class="cell medium-9 grid-x grid-margin-x align-center" method="POST">
+    {% csrf_token %}
+
+    <!-- Email -->
+    <div class="cell medium-12">
+      <label>Email:</label>
+      <div class="input-group">
+        <span class="input-group-label">
+          <i class="fas fa-envelope"></i>
+        </span>
+        {{ form.email }}
+      </div>
+      {% for error in form.email.errors %}
+        <p class="error-message">
+          <i class="fas fa-exclamation-circle"></i> {{ error|escape }}
+        </p>
+      {% endfor %}
+    </div>
+
+    <!-- Nombre -->
+    <div class="cell medium-6">
+      <label>Nombre:</label>
+      <div class="input-group">
+        <span class="input-group-label">
+          <i class="fas fa-user"></i>
+        </span>
+        {{ form.full_name }}
+      </div>
+    </div>
+
+    <!-- Permisos -->
+    <div class="cell medium-6">
+      <label>Permisos:</label>
+      <div class="input-group">
+        {{ form.ocupation }}
+      </div>
+    </div>
+
+    <!-- Género -->
+    <div class="cell medium-6">
+      <label>Genero:</label>
+      <div class="input-group">
+        {{ form.genero }}
+      </div>
+    </div>
+
+    <!-- Fecha de Nacimiento -->
+    <div class="cell medium-6">
+      <label>Fecha de Nacimiento:</label>
+      <div class="input-group">
+        <span class="input-group-label">
+          <i class="fas fa-calendar-alt"></i>
+        </span>
+        {{ form.date_birth }}
+      </div>
+    </div>
+
+    <!-- Usuario Activo -->
+    <div class="cell medium-6">
+      <label>Usuario Activo:</label>
+      <div class="input-group">
+        {{ form.is_active }}
+      </div>
+    </div>
+
+    <!-- Botones: Guardar (izquierda) y Eliminar (derecha) -->
+    <div class="form-actions">
+      <!-- Botón Guardar -->
+      <button type="submit" class="btn btn-success">
+        <i class="fas fa-save"></i> Guardar
+      </button>
+
+      <!-- Botón Eliminar (abre modal) -->
+      {% if object %}
+        <a href="#" class="btn btn-danger" onclick="openDeleteModal(event)">
+          <i class="fas fa-trash-alt"></i> Eliminar
+        </a>
+      {% endif %}
+    </div>
+  </form>
+
+  <!-- Modal de Confirmación -->
+  <div id="deleteModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h4>Confirmar Eliminación</h4>
+        <span class="modal-close" onclick="closeDeleteModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p>¿Estás seguro de que deseas eliminar al usuario <strong>"{{ object.full_name }}"</strong>?</p>
+        <p style="color: var(--danger-color); font-weight: 500;">Esta acción no se puede deshacer.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" onclick="closeDeleteModal()">Cancelar</button>
+        <form action="{% url 'users_app:user-delete' object.id %}" method="POST" style="display: inline;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">
+            <i class="fas fa-trash"></i> Sí, Eliminar
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript para el modal -->
+<script>
+  function openDeleteModal(event) {
+    event.preventDefault();
+    document.getElementById('deleteModal').style.display = 'flex';
+  }
+
+  function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+  }
+
+  // Cerrar al hacer clic fuera del modal
+  window.onclick = function(event) {
+    const modal = document.getElementById('deleteModal');
+    if (event.target === modal) {
+      closeDeleteModal();
+    }
+  }
+</script>
+
+{% endblock panel-content %}

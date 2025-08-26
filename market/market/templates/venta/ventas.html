@@ -1,0 +1,234 @@
+{% extends "venta/base_venta.html" %}
+{% load static %}
+
+{% block panel-content %}
+
+<!-- Font Awesome 6 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+  :root {
+    --primary-blue: #2c5aa0;
+    --secondary-blue: #3a7ca5;
+    --accent-orange: #ff7b3a;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #343a40;
+    --text-color: #212529;
+    --border-color: #ced4da;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    --transition: all 0.3s ease;
+  }
+
+  body {
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .ventas-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  .page-title {
+    text-align: center;
+    color: var(--primary-blue);
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .page-title i {
+    color: var(--accent-orange);
+  }
+
+  /* Tabla moderna */
+  .ventas-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    margin-top: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .ventas-table thead {
+    background-color: var(--primary-blue);
+    color: white;
+  }
+
+  .ventas-table th {
+    padding: 0.9rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+  }
+
+  .ventas-table td {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--medium-gray);
+    color: var(--text-color);
+  }
+
+  .ventas-table tbody tr:hover {
+    background-color: #f1f8ff;
+    transition: background 0.2s;
+  }
+
+  .ventas-table .badge {
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-block;
+    min-width: 80px;
+  }
+
+  .badge-success {
+    background-color: var(--success-color);
+    color: white;
+  }
+
+  .ventas-table .text-right {
+    text-align: right;
+  }
+
+  .ventas-table .text-center {
+    text-align: center;
+  }
+
+  .btn-anular {
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    width: 40px;
+    height: 40px;
+    box-shadow: 0 2px 6px rgba(220, 53, 69, 0.2);
+  }
+
+  .btn-anular:hover {
+    background-color: #c82333;
+    transform: scale(1.08);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .ventas-container {
+      padding: 0 0.5rem;
+    }
+
+    .page-title {
+      font-size: 1.4rem;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .ventas-table {
+      font-size: 0.9rem;
+    }
+
+    .ventas-table th, .ventas-table td {
+      padding: 0.7rem 0.6rem;
+    }
+
+    .ventas-table th {
+      font-size: 0.85rem;
+    }
+
+    /* Ocultar columnas no esenciales en móvil */
+    .ventas-table th:nth-child(3),
+    .ventas-table td:nth-child(3) {
+      display: none;
+    }
+  }
+
+  /* Estado vacío */
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--dark-gray);
+    background: #f9f9fb;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+    font-size: 1.1rem;
+  }
+
+  .empty-state i {
+    font-size: 3rem;
+    color: var(--medium-gray);
+    opacity: 0.5;
+  }
+</style>
+
+<div class="ventas-container">
+  <h3 class="page-title">
+    <i class="fas fa-history"></i> Últimas Ventas Registradas
+  </h3>
+
+  {% if ventas %}
+    <table class="ventas-table">
+      <thead>
+        <tr>
+          <th>N°</th>
+          <th>Fecha</th>
+          <th>Cant. Productos</th>
+          <th>Monto Total</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for venta in ventas %}
+          <tr>
+            <td><strong>#{{ venta.id }}</strong></td>
+            <td>{{ venta.date_sale|date:"d/m/Y H:i" }}</td>
+            <td class="text-center">
+              <span class="badge" style="background: var(--secondary-blue);">
+                {{ venta.count }}
+              </span>
+            </td>
+            <td class="text-right">
+              <strong>Bs./ {{ venta.amount|floatformat:2 }}</strong>
+            </td>
+            <td class="text-center">
+              <a
+                href="{% url 'venta_app:venta-delete' venta.id %}"
+                class="btn-anular"
+                title="Anular venta"
+                onclick="return confirm('¿Estás seguro de anular esta venta? Esta acción no se puede deshacer.');"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="empty-state">
+      <i class="fas fa-shopping-bag"></i>
+      <p>No se han registrado ventas recientes.</p>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock panel-content %}

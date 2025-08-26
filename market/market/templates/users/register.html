@@ -1,0 +1,357 @@
+{% extends "users/base_users.html" %}
+
+{% load static %}
+
+{% block css %}
+<!-- Foundation CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css" crossorigin="anonymous">
+<!-- Foundation Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.min.css">
+<style>
+  :root {
+    --primary-blue: #2c5aa0;
+    --secondary-blue: #3a7ca5;
+    --accent-orange: #ff7b3a;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #343a40;
+    --text-color: #212529;
+    --border-color: #ced4da;
+    --success-color: #28a745;
+    --error-color: #dc3545;
+  }
+  
+  .form-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin: 1rem auto;
+    max-width: 900px;
+  }
+  
+  .form-title {
+    color: var(--primary-blue);
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--accent-orange);
+  }
+  
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--dark-gray);
+  }
+  
+  .input-container {
+    position: relative;
+  }
+  
+  .input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-blue);
+    z-index: 2;
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: var(--light-gray);
+  }
+  
+  .form-input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.2);
+    background-color: white;
+  }
+  
+  .form-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: var(--light-gray);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%232c5aa0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 16px;
+  }
+  
+  .form-select:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.2);
+    background-color: white;
+  }
+  
+  .error-message {
+    color: var(--error-color);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .error-message::before {
+    content: '⚠ ';
+    margin-right: 0.25rem;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--medium-gray);
+  }
+  
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  .btn-primary {
+    background-color: var(--primary-blue);
+    color: white;
+    min-width: 150px;
+  }
+  
+  .btn-primary:hover {
+    background-color: #1e4080;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .btn-danger {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .btn-danger:hover {
+    background-color: #bd2130;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .password-info {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-top: 0.5rem;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .form-container {
+      padding: 1.5rem;
+      margin: 0.5rem;
+    }
+    
+    .form-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    .form-actions {
+      flex-direction: column;
+    }
+    
+    .btn {
+      width: 100%;
+    }
+  }
+  
+  /* Estilos para mejorar la apariencia de los campos de formulario Django */
+  input[type="text"], 
+  input[type="email"], 
+  input[type="password"],
+  input[type="date"],
+  select {
+    height: 48px;
+    box-sizing: border-box;
+  }
+</style>
+{% endblock css %}
+
+{% block panel-content %}
+
+<div class="form-container">
+  <h3 class="form-title">Datos Nuevo Usuario</h3>
+  
+  <form method="POST" class="form-content">{% csrf_token %}
+    <div class="form-grid">
+      <!-- Email Field -->
+      <div class="form-group">
+        <label class="form-label">Email:</label>
+        <div class="input-container">
+          <i class="fi-mail input-icon"></i>
+          <input type="email" name="email" class="form-input" placeholder="correo@ejemplo.com" 
+                 value="{{ form.email.value|default:'' }}" required>
+        </div>
+        {% for error in form.email.errors %}
+          <p class="error-message">{{ error|escape }}</p>
+        {% endfor %}
+      </div>
+      
+      <!-- Full Name Field -->
+      <div class="form-group">
+        <label class="form-label">Nombre Completo:</label>
+        <div class="input-container">
+          <i class="fi-torso input-icon"></i>
+          <input type="text" name="full_name" class="form-input" placeholder="Nombre Apellido" 
+                 value="{{ form.full_name.value|default:'' }}" required>
+        </div>
+        {% for error in form.full_name.errors %}
+          <p class="error-message">{{ error|escape }}</p>
+        {% endfor %}
+      </div>
+      
+      <!-- Occupation Field -->
+      <div class="form-group">
+        <label class="form-label">Permisos:</label>
+        <select name="ocupation" class="form-select" required>
+          {% for value, text in form.ocupation.field.choices %}
+            <option value="{{ value }}" {% if form.ocupation.value == value %}selected{% endif %}>{{ text }}</option>
+          {% endfor %}
+        </select>
+        {% for error in form.ocupation.errors %}
+          <p class="error-message">{{ error|escape }}</p>
+        {% endfor %}
+      </div>
+      
+      <!-- Gender Field -->
+      <div class="form-group">
+        <label class="form-label">Género:</label>
+        <select name="genero" class="form-select" required>
+          {% for value, text in form.genero.field.choices %}
+            <option value="{{ value }}" {% if form.genero.value == value %}selected{% endif %}>{{ text }}</option>
+          {% endfor %}
+        </select>
+        {% for error in form.genero.errors %}
+          <p class="error-message">{{ error|escape }}</p>
+        {% endfor %}
+      </div>
+      
+      <!-- Date of Birth Field -->
+      <div class="form-group">
+        <label class="form-label">Fecha de Nacimiento:</label>
+        <div class="input-container">
+          <i class="fi-calendar input-icon"></i>
+          <input type="date" name="date_birth" class="form-input" 
+                 value="{{ form.date_birth.value|default:'' }}" required>
+        </div>
+        {% for error in form.date_birth.errors %}
+          <p class="error-message">{{ error|escape }}</p>
+        {% endfor %}
+      </div>
+      
+      <!-- Empty cell for spacing -->
+      <div class="form-group"></div>
+      
+      <!-- Password 1 Field -->
+      <div class="form-group">
+        <label class="form-label">Contraseña:</label>
+        <div class="input-container">
+          <i class="fi-lock input-icon"></i>
+          <input type="password" name="password1" class="form-input" placeholder="Mínimo 8 caracteres" required>
+        </div>
+        {% for error in form.password1.errors %}
+          <p class="error-message">{{ error|escape }}</p>
+        {% endfor %}
+        <p class="password-info">Use una combinación de letras, números y símbolos.</p>
+      </div>
+      
+      <!-- Password 2 Field -->
+      <div class="form-group">
+        <label class="form-label">Repetir Contraseña:</label>
+        <div class="input-container">
+          <i class="fi-lock input-icon"></i>
+          <input type="password" name="password2" class="form-input" placeholder="Repita su contraseña" required>
+        </div>
+        {% for error in form.password2.errors %}
+          <p class="error-message">{{ error|escape }}</p>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">
+        <i class="fi-save"></i> Guardar Usuario
+      </button>
+      
+      {% if object %}
+        <a href="#" class="btn btn-danger">
+          <i class="fi-trash"></i> Eliminar
+        </a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+
+{% endblock panel-content %}
+
+{% block js %}
+<!-- Foundation JS -->
+<script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/js/foundation.min.js" crossorigin="anonymous"></script>
+<script>
+  $(document).foundation();
+  
+  // Mejorar la experiencia de usuario en formularios
+  document.addEventListener('DOMContentLoaded', function() {
+    // Enfocar el primer campo con error o el primer campo vacío
+    const firstError = document.querySelector('.error-message');
+    if (firstError) {
+      const fieldWithError = firstError.closest('.form-group').querySelector('input, select');
+      if (fieldWithError) {
+        fieldWithError.focus();
+      }
+    }
+    
+    // Añadir validación visual en tiempo real
+    const inputs = document.querySelectorAll('input, select');
+    inputs.forEach(input => {
+      input.addEventListener('blur', function() {
+        if (this.value.trim() !== '') {
+          this.classList.add('has-value');
+        } else {
+          this.classList.remove('has-value');
+        }
+      });
+    });
+  });
+</script>
+{% endblock js %}

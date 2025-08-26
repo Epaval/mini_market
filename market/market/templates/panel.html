@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- Font Awesome 6 (iconos modernos) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+  :root {
+    --primary-blue: #2c5aa0;
+    --secondary-blue: #3a7ca5;
+    --accent-orange: #ff7b3a;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #343a40;
+    --text-color: #212529;
+    --border-color: #ced4da;
+    --success-color: #28a745;
+    --error-color: #dc3545;
+    --sidebar-bg: #1e293b;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --menu-hover: #f1f5f9;
+  }
+
+  body {
+    background-color: var(--light-gray);
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    color: var(--text-color);
+  }
+
+  /* --- SIDEBAR --- */
+  .off-canvas.position-left {
+    background: var(--sidebar-bg);
+    color: white;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+    width: 260px;
+    z-index: 1000;
+  }
+
+  .off-canvas h3 {
+    color: var(--accent-orange);
+    font-weight: 700;
+    font-size: 1.4rem;
+    margin: 1.2rem 0;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .vertical.menu {
+    margin: 0;
+  }
+
+  .vertical.menu > li > a {
+    color: #e2e8f0;
+    font-size: 0.95rem;
+    padding: 0.7rem 1rem;
+    display: flex;
+    align-items: center;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    margin: 0.1rem 0.5rem;
+  }
+
+  .vertical.menu > li > a:hover,
+  .vertical.menu > li > a.active {
+    background: rgba(255, 123, 58, 0.15);
+    color: var(--accent-orange);
+    font-weight: 500;
+  }
+
+  .vertical.menu .nested a {
+    color: #cbd5e1;
+    padding: 0.5rem 1.8rem;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .vertical.menu .nested a:hover {
+    color: var(--accent-orange);
+    background: rgba(255, 123, 58, 0.1);
+    border-radius: 6px;
+  }
+
+  .label.warning {
+    background-color: var(--accent-orange);
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.25em 0.6em;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* --- TOP BAR --- */
+  .top-bar {
+    background: white;
+    padding: 0.8rem 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .top-bar h4 {
+    color: var(--dark-gray);
+    margin: 0;
+    font-weight: 600;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .top-bar .label.warning {
+    background-color: var(--accent-orange);
+    color: white;
+    font-weight: 600;
+    padding: 0.4em 0.9em;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: background 0.3s;
+  }
+
+  .top-bar .label.warning:hover {
+    background-color: #e66a2b;
+    transform: scale(1.03);
+  }
+
+  /* --- ICONOS DE MENÚ --- */
+  .menu-icon {
+    width: 18px;
+    text-align: center;
+    margin-right: 10px;
+    font-size: 0.95rem;
+  }
+
+  .menu-icon.blue {
+    color: var(--primary-blue);
+  }
+
+  .menu-icon.orange {
+    color: var(--accent-orange);
+  }
+
+  /* --- RESPONSIVE --- */
+  @media (max-width: 768px) {
+    .off-canvas-content {
+      padding-left: 0 !important;
+    }
+    .off-canvas.position-left {
+      width: 220px;
+    }
+  }
+
+  .grid-container {
+    padding: 1.5em 1em;
+    max-width: 100%;
+  }
+
+  /* --- ANIMACIONES --- */
+  .off-canvas {
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .vertical.menu > li > a {
+    opacity: 0.95;
+  }
+
+  .vertical.menu > li > a:hover {
+    opacity: 1;
+  }
+</style>
+
+<div class="off-canvas-wrapper">
+  <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
+
+    <!-- SIDEBAR -->
+    <div class="off-canvas position-left reveal-for-large" id="my-info" data-off-canvas data-position="left">
+      <div class="row column">
+        <h3>
+          <i class="fas fa-store"></i> Market JP
+        </h3>
+
+        <ul class="vertical menu" data-accordion-menu>
+
+          <!-- ALMACÉN -->
+          <li>
+            <a href="#">
+              <i class="fas fa-warehouse menu-icon blue"></i>
+              <span class="label warning">Almacén</span>
+            </a>
+            <ul class="nested vertical menu">
+              <li class="{% if request.resolver_match.url_name == 'producto-lista' %}activeli{% endif %}">
+                <a href="{% url 'producto_app:producto-lista' %}">
+                  <i class="fas fa-box-open menu-icon"></i> Productos
+                </a>
+              </li>
+              <li class="{% if request.resolver_match.url_name == 'producto-filtros' %}activeli{% endif %}">
+                <a href="{% url 'producto_app:producto-filtros' %}">
+                  <i class="fas fa-chart-line menu-icon"></i> Reportes
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <!-- VENTAS -->
+          <li>
+            <a href="#">
+              <i class="fas fa-cash-register menu-icon orange"></i>
+              <span class="label warning">Ventas</span>
+            </a>
+            <ul class="nested vertical menu">
+              <li class="{% if request.resolver_match.url_name == 'venta-index' %}activeli{% endif %}">
+                <a href="{% url 'venta_app:venta-index' %}">
+                  <i class="fas fa-tags menu-icon"></i> Vender
+                </a>
+              </li>
+              <li class="{% if request.resolver_match.url_name == 'caja-index' %}activeli{% endif %}">
+                <a href="{% url 'caja_app:caja-index' %}">
+                  <i class="fas fa-calculator menu-icon"></i> Cerrar Caja
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <!-- ADMINISTRACIÓN -->
+          <li>
+            <a href="#">
+              <i class="fas fa-shield-alt menu-icon blue"></i>
+              <span class="label warning">Admin</span>
+            </a>
+            <ul class="nested vertical menu">
+              <li class="{% if request.resolver_match.url_name == 'index-admin' %}activeli{% endif %}">
+                <a href="{% url 'home_app:index-admin' %}">
+                  <i class="fas fa-tachometer-alt menu-icon"></i> Panel
+                </a>
+              </li>
+              <li class="{% if request.resolver_match.url_name == 'user-lista' %}activeli{% endif %}">
+                <a href="{% url 'users_app:user-lista' %}">
+                  <i class="fas fa-users-cog menu-icon"></i> Usuarios
+                </a>
+              </li>
+              <li class="{% if request.resolver_match.url_name == 'admin-reporte' %}activeli{% endif %}">
+                <a href="{% url 'home_app:admin-reporte' %}">
+                  <i class="fas fa-file-invoice menu-icon"></i> Reportes
+                </a>
+              </li>
+            </ul>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="off-canvas-content" data-off-canvas-content>
+      <div class="grid-x">
+        <div class="cell top-bar">
+          <div class="top-bar-left">
+            <h4>
+              <i class="fas fa-user-shield"></i> Sesión: {{ user.full_name }}
+            </h4>
+          </div>
+          <div class="top-bar-right">
+            <a href="{% url 'users_app:user-logout' %}">
+              <span class="label warning">
+                <i class="fas fa-sign-out-alt"></i> Salir
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Zona dinámica -->
+      <div class="grid-container">
+        {% block panel-content %}
+        {% endblock panel-content %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,328 @@
+{% extends "producto/base_producto.html" %}
+{% load static %}
+
+{% block panel-content %}
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+  :root {
+    --primary-blue: #2c5aa0;
+    --secondary-blue: #3a7ca5;
+    --accent-orange: #ff7b3a;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #343a40;
+    --text-color: #212529;
+    --border-color: #ced4da;
+    --success-color: #28a745;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    --input-bg: #ffffff;
+    --input-border: #ced4da;
+  }
+
+  .filters-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  .section-title {
+    font-size: 1.4rem;
+    color: var(--primary-blue);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* Formulario de filtros */
+  .filters-form {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+    margin-bottom: 2rem;
+  }
+
+  .filters-form .input-group {
+    margin-bottom: 1rem;
+  }
+
+  .input-group-label {
+    background-color: var(--primary-blue);
+    color: white;
+    font-weight: 500;
+    border-radius: 6px 0 0 6px;
+    padding: 0 1rem;
+  }
+
+  .input-group-field {
+    border: 1px solid var(--input-border);
+    border-radius: 0 6px 6px 0;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .input-group-field:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 2px rgba(44, 90, 160, 0.2);
+  }
+
+  .filters-form p {
+    margin: 0.8rem 0 0.5rem;
+    color: var(--dark-gray);
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  .filters-form button {
+    background-color: var(--success-color);
+    color: white;
+    border: none;
+    padding: 0.7rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+  }
+
+  .filters-form button:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+  }
+
+  /* Tabla moderna */
+  .products-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    margin-top: 1rem;
+  }
+
+  .products-table thead {
+    background-color: var(--primary-blue);
+    color: white;
+  }
+
+  .products-table th, .products-table td {
+    padding: 0.9rem 1rem;
+    text-align: left;
+  }
+
+  .products-table th {
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .products-table th a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .products-table th a:hover {
+    text-decoration: underline;
+  }
+
+  .products-table tbody tr {
+    border-bottom: 1px solid var(--medium-gray);
+    transition: background 0.2s;
+  }
+
+  .products-table tbody tr:hover {
+    background-color: #f1f8ff;
+  }
+
+  .products-table .btn-eye {
+    background-color: var(--accent-orange);
+    color: white;
+    border: none;
+    padding: 0.5rem 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+    width: 40px;
+    height: 40px;
+  }
+
+  .products-table .btn-eye:hover {
+    background-color: #e56a2c;
+    transform: scale(1.05);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .filters-form {
+      padding: 1rem;
+    }
+
+    .grid-x .cell.medium-4 {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+
+    .products-table {
+      font-size: 0.9rem;
+    }
+
+    .products-table th, .products-table td {
+      padding: 0.6rem;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+    }
+  }
+</style>
+
+<div class="filters-container">
+  <h3 class="section-title">
+    <i class="fas fa-filter"></i> Filtros de Búsqueda
+  </h3>
+
+  <!-- Formulario de filtros -->
+  <form class="filters-form" method="GET">
+    <!-- Búsqueda por nombre o código -->
+    <div class="input-group">
+      <span class="input-group-label">
+        <i class="fas fa-search"></i>
+      </span>
+      <input
+        class="input-group-field"
+        type="text"
+        id="kword"
+        name="kword"
+        value="{{ request.GET.kword }}"
+        placeholder="Buscar por código o nombre..."
+      />
+    </div>
+
+    <!-- Filtros avanzados -->
+    <div class="grid-x grid-margin-x">
+      <p><i class="fas fa-calendar-alt"></i> Por Fecha de Vencimiento</p>
+      <div class="cell medium-4">
+        <input
+          type="date"
+          name="date_start"
+          id="date_start"
+          class="input-group-field"
+          value="{{ request.GET.date_start }}"
+        />
+      </div>
+      <div class="cell medium-4">
+        <input
+          type="date"
+          name="date_end"
+          id="date_end"
+          class="input-group-field"
+          value="{{ request.GET.date_end }}"
+        />
+      </div>
+
+      <p><i class="fas fa-building"></i> Proveedor o Marca</p>
+      <div class="cell medium-4">
+        <input
+          type="text"
+          name="provider"
+          id="provider"
+          class="input-group-field"
+          placeholder="Proveedor..."
+          value="{{ request.GET.provider }}"
+        />
+      </div>
+      <div class="cell medium-4">
+        <input
+          type="text"
+          name="marca"
+          id="marca"
+          class="input-group-field"
+          placeholder="Marca..."
+          value="{{ request.GET.marca }}"
+        />
+      </div>
+
+      <div class="cell medium-4">
+        <button type="submit">
+          <i class="fas fa-filter"></i> Filtrar
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Tabla de productos -->
+  <table class="products-table">
+    <thead>
+      <tr>
+        <th>COD</th>
+        <th>
+          <a href="{% if request.GET.order == 'name' %}{{ request.get_full_path }}?order=-name{% else %}{{ request.get_full_path }}{% if request.GET %}&{% else %}?{% endif %}order=name{% endif %}">
+            <i class="fas fa-sort"></i> Nombre
+          </a>
+        </th>
+        <th>Precio Venta</th>
+        <th>Precio Compra</th>
+        <th>
+          <a href="{% if request.GET.order == 'stok' %}{{ request.get_full_path }}?order=-stok{% else %}{{ request.get_full_path }}{% if request.GET %}&{% else %}?{% endif %}order=stok{% endif %}">
+            <i class="fas fa-box"></i> Stock
+          </a>
+        </th>
+        <th>
+          <a href="{% if request.GET.order == 'num' %}{{ request.get_full_path }}?order=-num{% else %}{{ request.get_full_path }}{% if request.GET %}&{% else %}?{% endif %}order=num{% endif %}">
+            <i class="fas fa-chart-line"></i> Ventas
+          </a>
+        </th>
+        <th>Vencimiento</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for producto in productos %}
+        <tr>
+          <td>{{ producto.barcode }}</td>
+          <td>{{ producto.name }}</td>
+          <td>S/ {{ producto.sale_price|floatformat:2 }}</td>
+          <td>S/ {{ producto.purchase_price|floatformat:2 }}</td>
+          <td>{{ producto.count }}</td>
+          <td>{{ producto.num_sale }}</td>
+          <td>{{ producto.due_date|default:"-" }}</td>
+          <td>
+            <a
+              href="{% url 'producto_app:producto-detail' producto.id %}"
+              class="btn-eye"
+              title="Ver detalle"
+            >
+              <i class="fas fa-eye"></i>
+            </a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="8" style="text-align: center; color: #6c757d; padding: 2rem;">
+            <i class="fas fa-box-open" style="font-size: 2rem; opacity: 0.3;"></i><br>
+            <strong>No se encontraron productos</strong>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock panel-content %}

@@ -1,0 +1,535 @@
+{% extends "producto/base_producto.html" %}
+{% load static %}
+
+{% block panel-content %}
+
+<!-- Font Awesome 6 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+  :root {
+    --primary-blue: #2c5aa0;
+    --accent-orange: #ff7b3a;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #343a40;
+    --text-color: #212529;
+    --border-color: #ced4da;
+    --danger-color: #dc3545;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --transition: all 0.3s ease;
+  }
+
+  .panel-content h3 {
+    text-align: center;
+    color: var(--primary-blue);
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .panel-content h3 i {
+    color: var(--accent-orange);
+    font-size: 1.4rem;
+  }
+
+  /* Input Group modernizado */
+  .input-group {
+    display: flex;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 0.2rem;
+  }
+
+  .input-group-label {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-group input,
+  .input-group select,
+  .input-group textarea {
+    flex: 1;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
+  }
+
+  .input-group input:focus,
+  .input-group select:focus,
+  .input-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 2px rgba(44, 90, 160, 0.2);
+  }
+
+  .input-group textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  /* Errores modernos */
+  .error-message {
+    color: var(--danger-color);
+    font-size: 0.85rem;
+    margin: 0.3rem 0 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Botones llamativos */
+  .button {
+    padding: 0.7rem 1.2rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    text-decoration: none;
+    text-align: center;
+  }
+
+  .button.success {
+    background-color: var(--accent-orange);
+    color: white;
+  }
+
+  .button.success:hover {
+    background-color: #e56a2c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(255, 123, 58, 0.3);
+  }
+
+  .button.alert {
+    background-color: var(--danger-color);
+    color: white;
+  }
+
+  .button.alert:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+  }
+
+  .button.clear {
+    background: transparent;
+    border: 2px solid var(--danger-color);
+    color: var(--danger-color);
+  }
+
+  .button.clear:hover {
+    background-color: #f8d7da;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .grid-x .cell.medium-6,
+    .grid-x .cell.medium-12 {
+      width: 100%;
+    }
+
+    .button {
+      width: 100%;
+      justify-content: center;
+      margin-bottom: 0.8rem;
+    }
+  }
+
+  /* Estilos del modal */
+   .modal {
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-header h4 {
+    margin: 0;
+    color: #343a40;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.2rem;
+  }
+
+  .modal-close {
+    font-size: 1.5rem;
+    color: #6c757d;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+
+  .modal-close:hover {
+    color: #343a40;
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+    color: #495057;
+    line-height: 1.6;
+  }
+
+  .modal-body p {
+    margin: 0.8rem 0;
+  }
+
+  .modal-footer {
+    padding: 1rem 1.5rem;
+    text-align: right;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .modal-footer .button {
+    margin: 0;
+    width: auto;
+  }
+
+  /* Animaciones */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes scaleIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+</style>
+
+<div class="grid-x grid-margin-x align-center">
+  <h3 class="cell">
+    <i class="fas fa-box"></i> Datos de Producto
+  </h3>  
+
+  <form class="cell medium-9 grid-x grid-margin-x" method="POST">
+    {% csrf_token %}
+    
+    <!-- Código de barras -->
+    <div class="cell medium-6">
+      <label>Codigo de barras:</label>
+      <div class="input-group">
+        <span class="input-group-label">
+          <i class="fas fa-barcode"></i>
+        </span>
+        {{ form.barcode }}
+      </div>
+      {% for error in form.barcode.errors %}
+        <p class="error-message">
+          <i class="fas fa-exclamation-circle"></i> {{ error|escape }}
+        </p>
+      {% endfor %}
+    </div>
+
+    <!-- Nombre -->
+    <div class="cell medium-6">
+      <label>Nombre:</label>
+      <div class="input-group">
+        <span class="input-group-label">
+          <i class="fas fa-tag"></i>
+        </span>
+        {{ form.name }}
+      </div>
+      {% for error in form.name.errors %}
+        <p class="error-message">
+          <i class="fas fa-exclamation-circle"></i> {{ error|escape }}
+        </p>
+      {% endfor %}
+    </div>
+
+    <!-- Proveedor -->
+    <div class="cell medium-6">
+      <label>Proveedor:</label>
+      <div class="input-group">
+        <span class="input-group-label">
+          <i class="fas fa-building"></i>
+        </span>
+        {{ form.provider }}
+      </div>
+      {% for error in form.provider.errors %}
+        <p class="error-message">
+          <i class="fas fa-exclamation-circle"></i> {{ error|escape }}
+        </p>
+      {% endfor %}
+    </div>
+
+    <!-- Marca -->
+    <div class="cell medium-6">
+      <label>Marca:</label>
+      <div class="input-group">
+        <span class="input-group-label">
+          <i class="fas fa-copyright"></i>
+        </span>
+        {{ form.marca }}
+      </div>
+      {% for error in form.marca.errors %}
+        <p class="error-message">
+          <i class="fas fa-exclamation-circle"></i> {{ error|escape }}
+        </p>
+      {% endfor %}
+    </div>
+
+    <!-- Unidad de Medida -->
+    <div class="cell medium-6">
+      <label>Unidad de Medida:</label>
+      <div class="input-group">
+        <span class="input-group-label">
+          <i class="fas fa-weight-hanging"></i>
+        </span>
+        {{ form.unit }}
+      </div>
+      {% for error in form.unit.errors %}
+        <p class="error-message">
+          <i class="fas fa-exclamation-circle"></i> {{ error|escape }}
+        </p>
+      {% endfor %}
+    </div>
+
+    <!-- Fecha de Vencimiento -->
+    <div class="cell medium-6">
+      <label>Fecha de Vencimiento:</label>
+      <div class="input-group">
+        <span class="input-group-label">
+          <i class="fas fa-calendar-alt"></i>
+        </span>
+        {{ form.due_date }}
+      </div>
+      {% for error in form.due_date.errors %}
+        <p class="error-message">
+          <i class="fas fa-exclamation-circle"></i> {{ error|escape }}
+        </p>
+      {% endfor %}
+    </div>
+
+    <!-- Precio Compra -->
+    <div class="cell medium-6">
+      <label>Precio Compra:</label>
+      <div class="input-group">
+        <span class="input-group-label">
+          <i class="fas fa-file-invoice-dollar"></i>
+        </span>
+        {{ form.purchase_price }}
+      </div>
+      {% for error in form.purchase_price.errors %}
+        <p class="error-message">
+          <i class="fas fa-exclamation-circle"></i> {{ error|escape }}
+        </p>
+      {% endfor %}
+    </div>
+
+    <!-- Precio Venta -->
+    <div class="cell medium-6">
+      <label>Precio Venta:</label>
+      <div class="input-group">
+        <span class="input-group-label">
+          <i class="fas fa-tags"></i>
+        </span>
+        {{ form.sale_price }}
+      </div>
+      {% for error in form.sale_price.errors %}
+        <p class="error-message">
+          <i class="fas fa-exclamation-circle"></i> {{ error|escape }}
+        </p>
+      {% endfor %}
+    </div>
+
+    <!-- Cantidad en Almacén -->
+    <div class="cell medium-12">
+      <label>Cantidad en Almacen:</label>
+      <div class="input-group">
+        <span class="input-group-label">
+          <i class="fas fa-boxes"></i>
+        </span>
+        {{ form.count }}
+      </div>
+      {% for error in form.count.errors %}
+        <p class="error-message">
+          <i class="fas fa-exclamation-circle"></i> {{ error|escape }}
+        </p>
+      {% endfor %}
+    </div>
+
+    <!-- Descripción -->
+    <div class="cell medium-12">
+      <label>Descripcion del producto:</label>
+      <div class="input-group">
+        {{ form.description }}
+      </div>
+      {% for error in form.description.errors %}
+        <p class="error-message">
+          <i class="fas fa-exclamation-circle"></i> {{ error|escape }}
+        </p>
+      {% endfor %}
+    </div>
+
+<!-- Botones con modal moderno -->
+<div class="cell medium-6" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+  <button type="submit" class="button success">
+    <i class="fas fa-save"></i> Guardar
+  </button>
+
+  {% if product %}
+    <!-- Botón que abre el modal -->
+    <a href="#" class="button alert clear" onclick="openDeleteModal(event)">
+      <i class="fas fa-trash-alt"></i> Eliminar
+    </a>
+  {% endif %}
+</div>
+
+<!-- Modal de Confirmación -->
+
+<div id="deleteModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4>
+        <i class="fas fa-exclamation-triangle" style="color: #ff7b3a;"></i>
+        Confirmar Eliminación
+      </h4>
+      <span class="modal-close" onclick="closeDeleteModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <p>¿Estás seguro de que deseas eliminar el producto <strong>"{{ product.name }}"</strong>?</p>
+      <p style="color: #dc3545; font-weight: 500;">Esta acción no se puede deshacer.</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="button" onclick="closeDeleteModal()">Cancelar</button>
+      
+      <!-- Solo muestra el botón si el producto existe (es decir, está siendo editado, no creado) -->
+      {% if product.pk %}
+        <a href="{% url 'producto_app:producto-delete' product.pk %}" class="button alert">
+          <i class="fas fa-trash-alt"></i> Sí, Eliminar
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+
+<!-- Estilos del modal -->
+<style>
+  .modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .modal-content {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 500px;
+    overflow: hidden;
+    animation: scaleIn 0.3s ease;
+  }
+
+  .modal-header {
+    background-color: #f8f9fa;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-header h4 {
+    margin: 0;
+    color: #343a40;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.2rem;
+  }
+
+  .modal-close {
+    font-size: 1.5rem;
+    color: #6c757d;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+
+  .modal-close:hover {
+    color: #343a40;
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+    color: #495057;
+    line-height: 1.6;
+  }
+
+  .modal-body p {
+    margin: 0.8rem 0;
+  }
+
+  .modal-footer {
+    padding: 1rem 1.5rem;
+    text-align: right;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .modal-footer .button {
+    margin: 0;
+    width: auto;
+  }
+
+  /* Animaciones */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes scaleIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+</style>
+
+<!-- JavaScript para manejar el modal -->
+<script>
+  function openDeleteModal(event) {
+    event.preventDefault();
+    document.getElementById('deleteModal').style.display = 'flex';
+  }
+
+  function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+  }
+
+  // Cerrar al hacer clic fuera del contenido
+  window.onclick = function(event) {
+    const modal = document.getElementById('deleteModal');
+    if (event.target === modal) {
+      closeDeleteModal();
+    }
+  }
+</script>
+
+
+
+
+{% endblock panel-content %}

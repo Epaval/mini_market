@@ -1,0 +1,316 @@
+{% extends "users/base_users.html" %}
+
+{% load static %}
+
+{% block css %}
+<!-- Foundation CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css" crossorigin="anonymous">
+<style>
+  :root {
+    --primary-blue: #2c5aa0;
+    --secondary-blue: #3a7ca5;
+    --accent-orange: #ff7b3a;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #343a40;
+    --text-color: #212529;
+  }
+  
+  body {
+    background-color: #f5f5f5;
+    color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .panel-content {
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 1rem;
+  }
+  
+  .page-title {
+    color: var(--primary-blue);
+    font-weight: 600;
+    margin-bottom: 2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent-orange);
+    text-align: center;
+  }
+  
+  .users-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+  }
+  
+  .users-table thead th {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+  }
+  
+  .users-table tbody td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--medium-gray);
+    vertical-align: middle;
+  }
+  
+  .users-table tbody tr:nth-child(even) {
+    background-color: var(--light-gray);
+  }
+  
+  .users-table tbody tr:hover {
+    background-color: rgba(44, 90, 160, 0.05);
+    transition: background-color 0.3s ease;
+  }
+  
+  .status-label {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+  }
+  
+  .status-active {
+    background-color: #e7f4e4;
+    color: #2e7d32;
+  }
+  
+  .status-inactive {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+  
+  .btn {
+    border-radius: 4px;
+    font-weight: 600;
+    padding: 0.6rem 1.2rem;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+  }
+  
+  .btn-primary {
+    background-color: var(--primary-blue);
+    color: white;
+    border: none;
+  }
+  
+  .btn-primary:hover {
+    background-color: #1e4080;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .btn-warning {
+    background-color: var(--accent-orange);
+    color: white;
+    border: none;
+  }
+  
+  .btn-warning:hover {
+    background-color: #e06a2a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .action-btn {
+    padding: 0.5rem;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+  }
+  
+  .card-user {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid var(--primary-blue);
+  }
+  
+  .card-user:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .user-email {
+    color: var(--primary-blue);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  
+  .user-name {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .user-detail {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .users-table thead {
+      display: none;
+    }
+    
+    .users-table tr {
+      display: block;
+      margin-bottom: 1rem;
+      border: 1px solid var(--medium-gray);
+      border-radius: 8px;
+    }
+    
+    .users-table td {
+      display: block;
+      text-align: right;
+      padding: 0.75rem;
+      position: relative;
+      border-bottom: 1px solid var(--medium-gray);
+    }
+    
+    .users-table td:last-child {
+      border-bottom: none;
+    }
+    
+    .users-table td::before {
+      content: attr(data-label);
+      position: absolute;
+      left: 0.75rem;
+      top: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      color: var(--primary-blue);
+    }
+    
+    .panel-content {
+      padding: 1rem;
+      margin: 0.5rem;
+    }
+  }
+</style>
+{% endblock css %}
+
+{% block panel-content %}
+
+<div class="grid-container">
+  <h3 class="page-title">Usuarios del Sistema</h3>
+  
+  <!-- Vista de tabla para pantallas grandes -->
+  <div class="show-for-medium">
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Nombres</th>
+          <th>Última Conexión</th>
+          <th>Permisos</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for usuario in usuarios %}
+          <tr>
+            <td>{{ usuario.email }}</td>
+            <td>{{ usuario.full_name }}</td>
+            <td>{{ usuario.last_login|date:"d/m/Y H:i" }}</td>
+            <td>{{ usuario.get_ocupation_display }}</td>
+            <td>
+              {% if usuario.is_active %}
+                <span class="status-label status-active">Activo</span>
+              {% else %}
+                <span class="status-label status-inactive">De Baja</span>
+              {% endif %}
+            </td>
+            <td>
+              <a href="{% url 'users_app:user-update' usuario.pk %}" class="action-btn btn-warning" title="Editar usuario">
+                <i class="fi-pencil"></i>
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- Vista de tarjetas para móviles -->
+  <div class="hide-for-medium">
+    {% for usuario in usuarios %}
+      <div class="card-user">
+        <div class="user-name">{{ usuario.full_name }}</div>
+        <div class="user-email">{{ usuario.email }}</div>
+        <div class="user-detail"><strong>Última conexión:</strong> {{ usuario.last_login|date:"d/m/Y H:i" }}</div>
+        <div class="user-detail"><strong>Permisos:</strong> {{ usuario.get_ocupation_display }}</div>
+        <div class="user-detail">
+          <strong>Estado:</strong> 
+          {% if usuario.is_active %}
+            <span class="status-label status-active">Activo</span>
+          {% else %}
+            <span class="status-label status-inactive">De Baja</span>
+          {% endif %}
+        </div>
+        <div class="grid-x grid-margin-x">
+          <div class="cell small-12" style="margin-top: 1rem;">
+            <a href="{% url 'users_app:user-update' usuario.pk %}" class="btn-warning button expanded">
+              <i class="fi-pencil"></i> Editar Usuario
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  
+  <div class="grid-x grid-margin-x">
+    <div class="cell text-center" style="margin-top: 2rem;">
+      <a href="{% url 'users_app:user-register' %}" class="btn-primary button">
+        <i class="fi-plus"></i> Agregar Nuevo Usuario
+      </a>
+    </div>
+  </div>
+</div>
+
+{% endblock panel-content %}
+
+{% block js %}
+<!-- Foundation JS -->
+<script src="https://cdn.jsdelivivr.net/npm/foundation-sites@6.7.5/dist/js/foundation.min.js" crossorigin="anonymous"></script>
+<script>
+  $(document).foundation();
+  
+  // Preparar tabla para responsividad
+  document.addEventListener("DOMContentLoaded", function() {
+    const table = document.querySelector('.users-table');
+    if (table) {
+      const headers = table.querySelectorAll('th');
+      const rows = table.querySelectorAll('tr');
+      
+      rows.forEach((row, rowIndex) => {
+        if (rowIndex > 0) { // Skip header row
+          const cells = row.querySelectorAll('td');
+          cells.forEach((cell, cellIndex) => {
+            cell.setAttribute('data-label', headers[cellIndex].textContent);
+          });
+        }
+      });
+    }
+  });
+</script>
+{% endblock js %}

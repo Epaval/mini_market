@@ -1,0 +1,107 @@
+{% extends "home/base_home.html" %}
+{% load static %}
+
+{% block panel-content %}
+
+<style>
+  :root {
+    --primary-blue: #2c5aa0;
+    --secondary-blue: #3a7ca5;
+    --accent-orange: #ff7b3a;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #343a40;
+    --text-color: #212529;
+    --border-color: #ced4da;
+    --success-color: #28a745;
+    --error-color: #dc3545;
+  }
+
+  .welcome-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 1rem;
+  }
+
+  .welcome-card {
+    background: white;
+    border-left: 5px solid var(--primary-blue);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+    color: var(--text-color);
+    position: relative;
+    animation: fadeInUp 0.6s ease-out;
+    transition: opacity 0.5s ease-out;
+  }
+
+  .welcome-card h5 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: var(--dark-gray);
+    font-weight: 600;
+  }
+
+  .welcome-card .icon {
+    color: var(--primary-blue);
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Animaciones */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeOut {
+    to {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  }
+
+  .fade-out {
+    animation: fadeOut 0.5s forwards;
+  }
+</style>
+
+<div class="grid-container">
+  <div class="welcome-container">
+    <div class="welcome-card" id="welcomeMessage">
+      <i class="fas fa-check-circle icon"></i>
+      <h5>Bienvenido al Sistema, <strong>{{ user.full_name }}</strong></h5>
+      <p style="color: var(--secondary-blue); font-size: 0.95rem; margin-top: 0.5rem;">
+        ¡Listo para comenzar! Que tengas un excelente día.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Desaparece el mensaje después de 3 segundos
+  setTimeout(() => {
+    const welcomeEl = document.getElementById('welcomeMessage');
+    if (welcomeEl) {
+      welcomeEl.classList.add('fade-out');
+      // Remueve el elemento del DOM después de la animación
+      setTimeout(() => {
+        welcomeEl.style.display = 'none';
+        // O elimina completamente: welcomeEl.remove();
+      }, 500); // Tiempo de la animación fade-out
+    }
+  }, 3000); // 3 segundos
+</script>
+
+{% endblock panel-content %}

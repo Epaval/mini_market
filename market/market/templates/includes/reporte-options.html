@@ -1,0 +1,115 @@
+<style>
+  :root {
+    --primary-blue: #2c5aa0;
+    --secondary-blue: #3a7ca5;
+    --accent-orange: #ff7b3a;
+    --success-color: #4caf50;
+    --light-gray: #f8f9fa;
+    --dark-gray: #343a40;
+    --text-color: #212529;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    --transition: all 0.3s ease;
+  }
+
+  .report-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .report-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid #e0e0e0;
+    padding: 1.8rem 1.5rem;
+    text-align: center;
+    transition: var(--transition);
+    text-decoration: none;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 160px;
+  }
+
+  .report-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--hover-shadow);
+    border-color: var(--primary-blue);
+  }
+
+  .report-card.active {
+    border: 2px solid var(--primary-blue);
+    background-color: #f0f6ff;
+  }
+
+  .report-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--primary-blue);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 10px rgba(44, 90, 160, 0.3);
+  }
+
+  .report-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark-gray);
+    margin: 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .report-cards {
+      grid-template-columns: 1fr;
+    }
+    .report-card {
+      padding: 1.5rem 1rem;
+    }
+  }
+</style>
+
+<div class="report-cards">
+  <!-- Informe de Ingresos -->
+  <a 
+    href="{% url 'home_app:admin-reporte' %}" 
+    class="report-card {% if request.resolver_match.url_name == 'admin-reporte' %}active{% endif %}"
+  >
+    <div class="report-icon">
+      <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <h4 class="report-title">Informe de Ingresos</h4>
+  </a>
+
+  <!-- Liquidación Proveedores -->
+  <a 
+    href="{% url 'home_app:admin-liquidacion' %}" 
+    class="report-card {% if request.resolver_match.url_name == 'admin-liquidacion' %}active{% endif %}"
+  >
+    <div class="report-icon">
+      <i class="fas fa-handshake"></i>
+    </div>
+    <h4 class="report-title">Liquidación Proveedores</h4>
+  </a>
+
+  <!-- Resumen Ventas -->
+  <a 
+    href="{% url 'home_app:admin-resumen_ventas' %}" 
+    class="report-card {% if request.resolver_match.url_name == 'admin-resumen_ventas' %}active{% endif %}"
+  >
+    <div class="report-icon">
+      <i class="fas fa-chart-bar"></i>
+    </div>
+    <h4 class="report-title">Resumen de Ventas</h4>
+  </a>
+</div>

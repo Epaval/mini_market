@@ -1,0 +1,445 @@
+{% extends "venta/base_venta.html" %}
+{% load static %}
+
+{% block panel-content %}
+
+<!-- Font Awesome 6 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+  :root {
+    --primary-blue: #2c5aa0;
+    --secondary-blue: #3a7ca5;
+    --accent-orange: #ff7b3a;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #343a40;
+    --text-color: #212529;
+    --border-color: #ced4da;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    --transition: all 0.3s ease;
+  }
+
+  body {
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .venta-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  /* Barra de acciones superior */
+  .actions-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .input-group {
+    display: flex;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .input-group-label {
+    background-color: var(--primary-blue);
+    color: white;
+    font-weight: 600;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+  }
+
+  input[type="number"], input[type="text"] {
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
+    width: 100%;
+  }
+
+  input[type="number"]:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 2px rgba(44, 90, 160, 0.2);
+  }
+
+  .btn-action {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition);
+    font-size: 0.95rem;
+  }
+
+  .btn-primary {
+    background-color: var(--primary-blue);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background-color: #234c86;
+    transform: translateY(-2px);
+  }
+
+  .btn-success {
+    background-color: var(--success-color);
+    color: white;
+  }
+
+  .btn-success:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+  }
+
+  .btn-warning {
+    background-color: var(--accent-orange);
+    color: white;
+  }
+
+  .btn-warning:hover {
+    background-color: #e56a2c;
+    transform: translateY(-2px);
+  }
+
+  .btn-danger {
+    background-color: var(--danger-color);
+    color: white;
+  }
+
+  .btn-danger:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+  }
+
+  .btn-hollow {
+    background: transparent;
+    color: var(--danger-color);
+    border: 2px solid var(--danger-color);
+  }
+
+  .btn-hollow:hover {
+    background: #f8d7da;
+  }
+
+  /* Sección principal */
+  .grid-main {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .grid-main {
+      grid-template-columns: 1fr;
+    }
+    .actions-bar {
+      flex-direction: column;
+    }
+  }
+
+  /* Tabla de productos */
+  .products-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    margin-top: 0.5rem;
+  }
+
+  .products-table th {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 0.9rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+  }
+
+  .products-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--medium-gray);
+  }
+
+  .products-table tbody tr:hover {
+    background-color: #f1f8ff;
+  }
+
+  .btn-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: var(--transition);
+  }
+
+  .btn-minus {
+    background-color: var(--secondary-blue);
+    color: white;
+  }
+
+  .btn-minus:hover {
+    background-color: #2c5aa0;
+  }
+
+  .btn-delete {
+    background-color: var(--danger-color);
+    color: white;
+  }
+
+  .btn-delete:hover {
+    background-color: #c82333;
+  }
+
+  /* Resumen de venta */
+  .resumen-venta {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+  }
+
+  .total-box {
+    text-align: center;
+    padding: 1rem;
+    background: var(--primary-blue);
+    color: white;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+  }
+
+  .total-box h5 {
+    margin: 0;
+    font-size: 1rem;
+    opacity: 0.9;
+  }
+
+  .total-box h2 {
+    margin: 0.3rem 0 0;
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .resumen-venta .btn-action {
+    width: 100%;
+    justify-content: center;
+    padding: 0.9rem;
+    margin-bottom: 0.8rem;
+    font-size: 1rem;
+  }
+
+  .resumen-venta .btn-hollow {
+    width: 100%;
+    justify-content: center;
+    padding: 0.9rem;
+    margin-top: 1rem;
+  }
+
+  /* Modal modernizado */
+  .reveal {
+    max-width: 500px !important;
+    border-radius: 14px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .reveal .callout {
+    margin: 0;
+    padding: 1.5rem;
+    background-color: var(--primary-blue);
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+
+  .reveal-body {
+    padding: 1.5rem;
+  }
+
+  .reveal-body .input-group {
+    margin-bottom: 1rem;
+  }
+
+  .reveal-body .input-group span.input-group-label {
+    background-color: var(--medium-gray);
+    color: var(--dark-gray);
+  }
+
+  .reveal-body .button {
+    margin-top: 1rem;
+    width: 100%;
+  }
+
+  .form-error {
+    color: var(--danger-color);
+    font-size: 0.85rem;
+    margin: 0.3rem 0;
+  }
+</style>
+
+<div class="venta-container">
+  <!-- Barra de acciones -->
+  <div class="actions-bar">
+    <form class="input-group" method="POST" style="flex: 1;">
+      {% csrf_token %}
+      <span class="input-group-label">
+        <i class="fas fa-barcode"></i>
+      </span>
+      {{ form.barcode }}
+      {{ form.count }}
+      <button type="submit" class="btn-action btn-primary">
+        <i class="fas fa-plus"></i> Agregar
+      </button>
+    </form>
+
+    <a href="{% url 'venta_app:venta-list' %}" class="btn-action btn-hollow">
+      <i class="fas fa-history"></i> Últimas Ventas
+    </a>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="grid-main">
+    <!-- Lista de productos -->
+    <div>
+      <h4 style="color: var(--dark-gray); margin-bottom: 1rem;">
+        <i class="fas fa-shopping-cart"></i> Productos en Venta
+      </h4>
+      <table class="products-table">
+        <thead>
+          <tr>
+            <th>COD</th>
+            <th>Producto</th>
+            <th>Precio</th>
+            <th>Cant.</th>
+            <th>-</th>
+            <th>×</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for producto in productos %}
+            <tr>
+              <td><code style="font-size: 0.9em;">{{ producto.barcode|truncatechars:10 }}</code></td>
+              <td>{{ producto.product.name|truncatechars:25 }}</td>
+              <td><strong>Bs./ {{ producto.product.sale_price }}</strong></td>
+              <td>{{ producto.count }}</td>
+              <td>
+                <form action="{% url 'venta_app:carshop-update' producto.id %}" method="POST" style="display: inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn-icon btn-minus" title="Reducir cantidad">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </form>
+              </td>
+              <td>
+                <form action="{% url 'venta_app:carshop-delete' producto.id %}" method="POST" style="display: inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn-icon btn-delete" title="Eliminar producto">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="6" style="text-align: center; color: #6c757d; padding: 2rem;">
+                <i class="fas fa-shopping-cart" style="font-size: 2rem; opacity: 0.3;"></i><br>
+                <strong>Aún no hay productos en el carrito</strong>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Resumen de venta -->
+    <div class="resumen-venta">
+      <div class="total-box">
+        <h5>Total a Cobrar</h5>
+        <h2>Bs./ {{ total_cobrar }}</h2>
+      </div>
+
+      <form action="{% url 'venta_app:venta-simple' %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn-action btn-success">
+          <i class="fas fa-credit-card"></i> Pagar Todo
+        </button>
+      </form>
+
+      <button data-open="exampleModal1" class="btn-action btn-warning">
+        <i class="fas fa-print"></i> Cobrar e Imprimir
+      </button>
+
+      <form action="{% url 'venta_app:carshop-delete_all' %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn-action btn-hollow">
+          <i class="fas fa-trash-alt"></i> Limpiar Todo
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Cobrar e Imprimir -->
+  <div class="reveal" id="exampleModal1" data-reveal>
+    <div class="callout">
+      <i class="fas fa-receipt"></i> Comprobante de Pago
+    </div>
+    <div class="reveal-body">
+      <form action="{% url 'venta_app:venta-voucher' %}" method="POST">
+        {% csrf_token %}
+        <div class="grid-x grid-margin-x">
+          <div class="cell medium-6">
+            <label><i class="fas fa-credit-card"></i> Tipo de Pago</label>
+            <div class="input-group">
+              <span class="input-group-label"><i class="fas fa-wallet"></i></span>
+              {{ form_voucher.type_payment }}
+            </div>
+            {% for error in form_voucher.type_payment.errors %}
+              <p class="form-error">{{ error }}</p>
+            {% endfor %}
+          </div>
+          <div class="cell medium-6">
+            <label><i class="fas fa-file-invoice"></i> Tipo de Comprobante</label>
+            <div class="input-group">
+              <span class="input-group-label"><i class="fas fa-receipt"></i></span>
+              {{ form_voucher.type_invoce }}
+            </div>
+            {% for error in form_voucher.type_invoce.errors %}
+              <p class="form-error">{{ error }}</p>
+            {% endfor %}
+          </div>
+        </div>
+        <button type="submit" class="btn-action btn-success">
+          <i class="fas fa-check-circle"></i> Confirmar Pago
+        </button>
+      </form>
+      <button class="close-button" data-close aria-label="Close modal" type="button">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+{% endblock panel-content %}
